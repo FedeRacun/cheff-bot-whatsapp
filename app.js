@@ -17,32 +17,37 @@ app.set('port',process.env.PORT);
 app.use(cors());
 app.use(express.json());
 
-app.get('/', function (req, res) {
-    res.send('Hello World')
-})
-
-let globalLog = ' LOGS ==== ';
-
-// Whatsapp session
-const SESSION_FILE_PATH = './session.json';
-let sessionCfg;
+let headless = true
 let sessionEnv;
+let sessionJson;
+let SESSION_FILE_PATH;
+const isProd = process.env.NODE_ENV == 'prod';
+// Whatsapp session
+if (isProd) {
 
-if (fs.existsSync(SESSION_FILE_PATH)) {
-    globalLog = globalLog + '\n existe 1 archivo JSON para session';
-    sessionCfg = require(SESSION_FILE_PATH);
-}
+    console.log('Estamos en prod');
+    sessionEnv = {
+        WABrowserId: process.env.WABrowserId,
+        WASecretBundle: process.env.WASecretBundle,
+        WAToken1: process.env.WAToken1,
+        WAToken2: process.env.WAToken2
+    }
 
-headless = !!sessionCfg;
+    sessionEnv = JSON.stringify(sessionEnv);
 
-if (process.env.NODE_ENV == 'prod') {
-    sessionEnv = {WABrowserId: process.env.WABrowserId, WASecretBundle: process.env.WASecretBundle, WAToken1: process.env.WAToken1, WAToken2: process.env.WAToken2}
-    globalLog = globalLog + '\n ES PROD' + JSON.stringify(sessionEnv);
-    console.log(globalLog);
 } else {
-    globalLog = globalLog + '\n NO ES PROD';
+
+    console.log('Estamos en Dev');
+    SESSION_FILE_PATH = './session.json';
+
+    if (fs.existsSync(SESSION_FILE_PATH)) {
+        sessionJson = require(SESSION_FILE_PATH);
+    } else {
+        headless = false;
+    }
 }
-const client = new Client({ puppeteer: { headless: true}, session: sessionEnv });
+
+const client = new Client({ puppeteer: { headless }, session: isProd ? sessionEnv : sessionJson });
 
 client.initialize();
 
@@ -53,14 +58,13 @@ client.on('qr', (qr) => {
 
 client.on('authenticated', (session) => {
     console.log('Auth success..');
-    globalLog = globalLog + '\n Auth success..';
-    sessionCfg=session;
+
+    sessionJson = session;
     // Si no existe el archivo session, lo creo.
-    if(!headless && process.env.NODE_ENV != 'prod') {
+    if(!headless && !isProd) {
         fs.writeFile(SESSION_FILE_PATH, JSON.stringify(session), function (err) {
             if (err) {
                 console.error(err);
-                globalLog = globalLog + '\nERROR: '+ err;
             }
         });
     }
@@ -69,18 +73,21 @@ client.on('authenticated', (session) => {
 client.on('auth_failure', msg => {
     // Fired if session restore was unsuccessfull
     console.error('AUTHENTICATION FAILURE', msg);
-    globalLog = globalLog + '\n AUTHENTICATION FAILURE';
 });
 
 client.on('ready', () => {
     console.log('Bot has been a wake-up');
-    globalLog = globalLog + '\nBot has been a wake-up';
 });
 
 client.on('message', driverMsg);
 
+
+app.get('/', function (req, res) {
+    res.send('Hello World')
+})
+
 app.get('/logs', function (req, res) {
-    res.send(globalLog)
+    res.send(`Is Prod: ${isProd} ${isProd ? sessionEnv : JSON.stringify(sessionJson)}`)
 })
 
 // Exports
