@@ -36,7 +36,11 @@ if (isProd) {
         WAToken2: process.env.WAToken2
     }
     hasAnyError = hasAnyError + `
-    ${sessionEnv.WABrowserId}`;
+    ${sessionEnv.WABrowserId}
+    ${sessionEnv.WASecretBundle}
+    ${sessionEnv.WAToken1}
+    ${sessionEnv.WAToken2}
+    `;
     //sessionEnv = JSON.stringify(sessionEnv);
 
 } else {
