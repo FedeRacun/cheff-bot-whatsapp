@@ -97,7 +97,6 @@ app.get('/', function (req, res) {
 app.get('/logs', function (req, res) {
     res.send(`Is Prod: ${isProd}
     ${isProd ? sessionEnv : JSON.stringify(sessionJson)},
-    CLIENTE: ${client.info.pushname}
     ERROR: ${hasAnyError}`)
 })
 
