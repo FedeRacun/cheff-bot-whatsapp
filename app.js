@@ -63,10 +63,13 @@ const client = new Client({ puppeteer: { headless }, session: isProd ? sessionEn
 
 hasAnyError = hasAnyError + `
 Teoricamente existe = ${!!client}`;
-client.initialize()
 
-hasAnyError = hasAnyError + `
-Teoricamente inicializamos el cliente`;
+client.initialize()
+.then(
+    hasAnyError = hasAnyError + `
+    Teoricamente inicializamos el cliente`
+)
+
 
 client.on('qr', (qr) => {
     // NOTE: This event will not be fired if a session is specified.
@@ -76,7 +79,8 @@ client.on('qr', (qr) => {
 
 client.on('authenticated', (session) => {
     console.log('Auth success..');
-    hasAnyError = hasAnyError + 'Auth success..'
+    hasAnyError = hasAnyError + `
+    Auth success..`;
     sessionJson = session;
     // Si no existe el archivo session, lo creo.
     if(!headless && !isProd) {
