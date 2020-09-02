@@ -35,7 +35,7 @@ if (isProd) {
         WAToken2: process.env.WAToken2
     }
 
-    sessionEnv = JSON.stringify(sessionEnv);
+    //sessionEnv = JSON.stringify(sessionEnv);
 
 } else {
 
@@ -52,9 +52,7 @@ if (isProd) {
 
 const client = new Client({ puppeteer: { headless }, session: isProd ? sessionEnv : sessionJson });
 
-client.initialize().then(res =>{
-    hasAnyError = hasAnyError + ' No hubo drama al inicializar, todo ok'
-});
+client.initialize()
 
 client.on('qr', (qr) => {
     // NOTE: This event will not be fired if a session is specified.
