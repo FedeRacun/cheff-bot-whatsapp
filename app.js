@@ -21,6 +21,7 @@ app.get('/', function (req, res) {
     res.send('Hello World')
 })
 
+let globalLog = ' ';
 
 // Whatsapp session
 const SESSION_FILE_PATH = './session.json';
@@ -48,13 +49,14 @@ client.on('qr', (qr) => {
 
 client.on('authenticated', (session) => {
     console.log('Auth success..');
+    globalLog = globalLog + '\n Auth success..';
     sessionCfg=session;
-
     // Si no existe el archivo session, lo creo.
     if(!headless && process.env.NODE_ENV != 'prod') {
         fs.writeFile(SESSION_FILE_PATH, JSON.stringify(session), function (err) {
             if (err) {
                 console.error(err);
+                globalLog = globalLog + '\nERROR: '+ err;
             }
         });
     }
@@ -63,13 +65,19 @@ client.on('authenticated', (session) => {
 client.on('auth_failure', msg => {
     // Fired if session restore was unsuccessfull
     console.error('AUTHENTICATION FAILURE', msg);
+    globalLog = globalLog + '\n AUTHENTICATION FAILURE';
 });
 
 client.on('ready', () => {
     console.log('Bot has been a wake-up');
+    globalLog = globalLog + '\nBot has been a wake-up';
 });
 
 client.on('message', driverMsg);
+
+app.get('/logs', function (req, res) {
+    res.send(globalLog)
+})
 
 // Exports
 global.client = client;
