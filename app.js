@@ -22,6 +22,8 @@ let sessionEnv;
 let sessionJson;
 let SESSION_FILE_PATH;
 const isProd = process.env.NODE_ENV == 'prod';
+
+let hasAnyError = '';
 // Whatsapp session
 if (isProd) {
 
@@ -49,11 +51,16 @@ if (isProd) {
 
 const client = new Client({ puppeteer: { headless }, session: isProd ? sessionEnv : sessionJson });
 
-client.initialize();
+try {
+    client.initialize();
+} catch (error) {
+    hasAnyError = hasAnyError + 'No pude inicializar'
+}
 
 client.on('qr', (qr) => {
     // NOTE: This event will not be fired if a session is specified.
     console.log('QR:', qr);
+    hasAnyError = hasAnyError + 'Genere un QR'
 });
 
 client.on('authenticated', (session) => {
@@ -73,6 +80,8 @@ client.on('authenticated', (session) => {
 client.on('auth_failure', msg => {
     // Fired if session restore was unsuccessfull
     console.error('AUTHENTICATION FAILURE', msg);
+
+    hasAnyError = hasAnyError + ' falle'
 });
 
 client.on('ready', () => {
@@ -87,7 +96,11 @@ app.get('/', function (req, res) {
 })
 
 app.get('/logs', function (req, res) {
-    res.send(`Is Prod: ${isProd} ${isProd ? sessionEnv : JSON.stringify(sessionJson)}`)
+    res.send(`Is Prod: ${isProd}
+    ${isProd ? sessionEnv : JSON.stringify(sessionJson)},
+    CLIENTE: ${!!client ? client.info.pushname : 'No se inicializo'}
+    PLATAFORM: ${!!client ? client.info.platform : 'No se inicializo'}
+    ERROR: ${hasAnyError}`)
 })
 
 // Exports
