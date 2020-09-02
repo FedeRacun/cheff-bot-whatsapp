@@ -62,7 +62,7 @@ client.on('qr', (qr) => {
 
 client.on('authenticated', (session) => {
     console.log('Auth success..');
-
+    hasAnyError = hasAnyError + 'Auth success..'
     sessionJson = session;
     // Si no existe el archivo session, lo creo.
     if(!headless && !isProd) {
