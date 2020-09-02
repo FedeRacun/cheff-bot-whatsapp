@@ -29,7 +29,7 @@ let sessionCfg;
 let sessionEnv;
 
 if (fs.existsSync(SESSION_FILE_PATH)) {
-    globalLog = globalLog + '\n Esiste 1 archivo JSON para session';
+    globalLog = globalLog + '\n existe 1 archivo JSON para session';
     sessionCfg = require(SESSION_FILE_PATH);
 }
 
@@ -37,11 +37,12 @@ headless = !!sessionCfg;
 
 if (process.env.NODE_ENV == 'prod') {
     sessionEnv = {WABrowserId: process.env.WABrowserId, WASecretBundle: process.env.WASecretBundle, WAToken1: process.env.WAToken1, WAToken2: process.env.WAToken2}
-    globalLog = globalLog + '\n ES PROD' + JSON.parse(sessionEnv);
+    globalLog = globalLog + '\n ES PROD' + JSON.stringify(sessionEnv);
+    console.log(globalLog);
 } else {
     globalLog = globalLog + '\n NO ES PROD';
 }
-const client = new Client({ puppeteer: { headless: true}, session: sessionEnv ? sessionEnv : sessionCfg });
+const client = new Client({ puppeteer: { headless: true}, session: sessionEnv });
 
 client.initialize();
 
