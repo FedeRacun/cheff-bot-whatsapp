@@ -17,6 +17,10 @@ app.set('port',process.env.PORT);
 app.use(cors());
 app.use(express.json());
 
+app.get('/', function (req, res) {
+    res.send('Hello World')
+})
+
 
 // Whatsapp session
 const SESSION_FILE_PATH = './session.json';
