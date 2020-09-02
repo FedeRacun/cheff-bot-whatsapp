@@ -21,21 +21,27 @@ app.get('/', function (req, res) {
     res.send('Hello World')
 })
 
-let globalLog = ' LOGS ==== \n';
+let globalLog = ' LOGS ==== ';
 
 // Whatsapp session
 const SESSION_FILE_PATH = './session.json';
 let sessionCfg;
 let sessionEnv;
+
 if (fs.existsSync(SESSION_FILE_PATH)) {
+    globalLog = globalLog + '\n Esiste 1 archivo JSON para session';
     sessionCfg = require(SESSION_FILE_PATH);
 }
 
 headless = !!sessionCfg;
 
-sessionEnv = {WABrowserId: process.env.WABrowserId, WASecretBundle: process.env.WASecretBundle, WAToken1: process.env.WAToken1, WAToken2: process.env.WAToken2}
-
-const client = new Client({ puppeteer: true, session: sessionEnv ? sessionEnv : sessionCfg });
+if (process.env.NODE_ENV == 'prod') {
+    sessionEnv = {WABrowserId: process.env.WABrowserId, WASecretBundle: process.env.WASecretBundle, WAToken1: process.env.WAToken1, WAToken2: process.env.WAToken2}
+    globalLog = globalLog + '\n ES PROD' + sessionEnv;
+} else {
+    globalLog = globalLog + '\n NO ES PROD';
+}
+const client = new Client({ puppeteer: { headless: true}, session: sessionEnv ? sessionEnv : sessionCfg });
 
 client.initialize();
 
