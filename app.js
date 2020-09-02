@@ -45,17 +45,16 @@ if (isProd) {
     if (fs.existsSync(SESSION_FILE_PATH)) {
         sessionJson = require(SESSION_FILE_PATH);
     } else {
+        hasAnyError = hasAnyError + 'NO EXISTE EL ARCHIVO'
         headless = false;
     }
 }
 
 const client = new Client({ puppeteer: { headless }, session: isProd ? sessionEnv : sessionJson });
 
-try {
-    client.initialize();
-} catch (error) {
-    hasAnyError = hasAnyError + 'No pude inicializar'
-}
+client.initialize().then(res =>{
+    hasAnyError = hasAnyError + ' No hubo drama al inicializar, todo ok'
+});
 
 client.on('qr', (qr) => {
     // NOTE: This event will not be fired if a session is specified.
@@ -98,8 +97,7 @@ app.get('/', function (req, res) {
 app.get('/logs', function (req, res) {
     res.send(`Is Prod: ${isProd}
     ${isProd ? sessionEnv : JSON.stringify(sessionJson)},
-    CLIENTE: ${!!client ? client.info.pushname : 'No se inicializo'}
-    PLATAFORM: ${!!client ? client.info.platform : 'No se inicializo'}
+    CLIENTE: ${client.info.pushname}
     ERROR: ${hasAnyError}`)
 })
 
