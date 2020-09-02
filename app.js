@@ -37,7 +37,7 @@ headless = !!sessionCfg;
 
 if (process.env.NODE_ENV == 'prod') {
     sessionEnv = {WABrowserId: process.env.WABrowserId, WASecretBundle: process.env.WASecretBundle, WAToken1: process.env.WAToken1, WAToken2: process.env.WAToken2}
-    globalLog = globalLog + '\n ES PROD' + sessionEnv;
+    globalLog = globalLog + '\n ES PROD' + JSON.parse(sessionEnv);
 } else {
     globalLog = globalLog + '\n NO ES PROD';
 }
