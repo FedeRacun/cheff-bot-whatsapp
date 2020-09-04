@@ -4,7 +4,8 @@
   "description": "my own bot",
   "main": "app.js",
   "scripts": {
-    "start": "node ./index.js"
+    "start": "node ./index.js",
+    "dev": "NODE_ENV=dev nodemon index.js"
   },
   "author": "Knispel Federico",
   "license": "ISC",
