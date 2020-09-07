@@ -5,13 +5,16 @@
   "main": "app.js",
   "scripts": {
     "start": "node ./index.js",
-    "dev": "NODE_ENV=dev nodemon index.js"
+    "dev": "NODE_ENV=dev nodemon index.js",
+    "pre-prod": "NODE_ENV=prod nodemon index.js"
   },
   "author": "Knispel Federico",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "mongoose": "^5.10.3",
     "node-fetch": "^2.6.0",
     "twit": "^2.2.11",
     "whatsapp-web.js": "^1.8.1"

@@ -1,21 +1,29 @@
 // NPM Packages
 const { Client } = require('whatsapp-web.js');
 const express = require('express');
+const bodyParser = require('body-parser');
 const cors = require('cors');
 
 // NodeJs packages
 const fs = require('fs');
 
 // Files
-const {controllerMsg} = require ('./src/controller');
+const {handlerMsg} = require ('./src/handlerMsg');
 const app = express();
 
 // Server Config
 app.set('port',process.env.PORT);
 
 //  MIDDLEWARES
+app.use(bodyParser.urlencoded({extended: false}));
 app.use(cors());
 app.use(express.json());
+
+
+// RUTAS
+app.use(require('./src/routes/routes'));
+
+
 
 // variables requeridas
 let headless = true
@@ -76,7 +84,7 @@ client.on('ready', () => {
     console.log('Bot has been a wake-up');
 });
 
-client.on('message', controllerMsg);
+client.on('message', handlerMsg);
 
 // Exports
 global.client = client;
