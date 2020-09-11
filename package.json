@@ -4,7 +4,7 @@
   "description": "my own bot",
   "main": "app.js",
   "scripts": {
-    "start": "node ./index.js",
+    "start": "NODE_ENV=prod node index.js",
     "dev": "NODE_ENV=dev nodemon index.js",
     "pre-prod": "NODE_ENV=prod nodemon index.js"
   },

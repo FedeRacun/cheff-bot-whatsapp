@@ -1,7 +1,6 @@
 // NPM Packages
 const { Client } = require('whatsapp-web.js');
 const express = require('express');
-const bodyParser = require('body-parser');
 const cors = require('cors');
 
 // NodeJs packages
@@ -15,7 +14,6 @@ const app = express();
 app.set('port',process.env.PORT);
 
 //  MIDDLEWARES
-app.use(bodyParser.urlencoded({extended: false}));
 app.use(cors());
 app.use(express.json());
 
@@ -23,15 +21,14 @@ app.use(express.json());
 // RUTAS
 app.use(require('./src/routes/routes'));
 
-
-
 // variables requeridas
 let headless = true
 let sessionEnv;
 let sessionJson;
-let SESSION_FILE_PATH;
+const SESSION_FILE_PATH = './session.json';
 const isProd = process.env.NODE_ENV == 'prod';
 
+console.log({isProd})
 // Whatsapp session
 if (isProd) {
     sessionEnv = {
@@ -43,7 +40,6 @@ if (isProd) {
 
 } else {
     // Si no es prod, busca un archivo session con las credenciales
-    SESSION_FILE_PATH = './session.json';
     if (fs.existsSync(SESSION_FILE_PATH)) {
         sessionJson = require(SESSION_FILE_PATH);
 
@@ -84,7 +80,16 @@ client.on('ready', () => {
     console.log('Bot has been a wake-up');
 });
 
-client.on('message', handlerMsg);
+client.on('message', async (msg) => {
+    const chat = await msg.getChat();
+    await chat.sendStateTyping();
+    handlerMsg(msg);
+});
+
+client.on('disconnected', (reason) => {
+    console.log('Client was logged out', reason);
+});
+
 
 // Exports
 global.client = client;

@@ -38,7 +38,8 @@ recetaCtrler.postRecetas =
             ingredients: body.ingredients,
             type: body.type,
             steps: body.staps,
-            glutenFree: body.glutenFree
+            glutenFree: body.glutenFree,
+            userName: body.userName
         });
 
         receta.save( (err, recetaDB) => {

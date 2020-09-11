@@ -8,6 +8,7 @@ function getRandom(max) {
 }
 
 async function getReceta(query) {
+    console.log('Voy a pedirle a la base: ',query);
     return new Promise((resolve,reject) => {
         Receta.find(query)
         .exec( (err, recetaDB)=> {
@@ -29,8 +30,9 @@ function actions(msg) {
     const isAction = body.startsWith('#')
     const hasAdditives = body.includes('-')
 
+    console.log({isAction, hasAdditives})
+
     if (isAction) {
-        body = body.toLowerCase();
         body = body.replace(/\s/g, '');
 
         if(hasAdditives){
@@ -69,21 +71,20 @@ function actions(msg) {
 
         case '#facil':
         case "#fácil":
-
-            getReceta({...queryPlus,difficulty: 1, type: 'ALL'}).then( recetaRandom => {
+            getReceta({...queryPlus,difficulty: 1}).then( recetaRandom => {
                 client.sendMessage(msg.from, MESSAGES.RECIPE(recetaRandom));
             })
             break;
 
         case '#medio':
-            getReceta({...queryPlus,difficulty: 2, type: 'ALL'}).then( recetaRandom => {
+            getReceta({...queryPlus,difficulty: 2}).then( recetaRandom => {
                 client.sendMessage(msg.from, MESSAGES.RECIPE(recetaRandom));
             })
             break;
 
         case '#dificil':
         case "#difícil":
-            getReceta({...queryPlus,difficulty: 3, type: 'ALL'}).then( recetaRandom => {
+            getReceta({...queryPlus,difficulty: 3}).then( recetaRandom => {
                 client.sendMessage(msg.from, MESSAGES.RECIPE(recetaRandom));
             })
             break;

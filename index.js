@@ -22,3 +22,5 @@ async function main() {
 }
 
 main();
+
+setTimeout(() => process.exit(0), 60 * 60 * 1000);

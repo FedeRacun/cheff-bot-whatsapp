@@ -20,7 +20,7 @@ let recetaSchema = new Schema({
         required: [true, 'El time es requerido']
     },
     ingredients: {
-        type: String,
+        type: [String],
         required: [true, 'El ingredients es requerido']
     },
     type: {
@@ -35,6 +35,10 @@ let recetaSchema = new Schema({
     glutenFree: {
         type: Boolean,
         required: [true, 'Requiere que aclares si es glutenFree ']
+    },
+    userName: {
+        type: String,
+        default: ""
     }
 });
 
