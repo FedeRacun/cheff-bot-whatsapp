@@ -26,6 +26,7 @@ MESSAGES.OPTIONS = `🧐 Las opciones son:
 *#vegetariano*
 *#vegano*
 *#postre*
+*#añadir*
 
 Si quisieras hacer combinaciones como:
 "un plato vegano dificil" basta con agregarle un guion y la primer letra de la dificultad [ *f* , *m* o *d* ], ejemplo:
@@ -45,5 +46,9 @@ MESSAGES.RECIPE = (recetaRandom) =>{
 Los ingredientes son: ${ingredientsToString? ingredientsToString : ''}
 Te llevará aproximadamente ${recetaRandom.time} minutos.`
 }
+
+MESSAGES.ADD = `Si quieres contribuir añadiendo alguna receta puedes hacerlo desde aqui:
+
+https://cheff-bot.herokuapp.com`;
 
 module.exports = MESSAGES

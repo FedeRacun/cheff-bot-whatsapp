@@ -37,7 +37,7 @@ recetaCtrler.postRecetas =
             time: body.time,
             ingredients: body.ingredients,
             type: body.type,
-            steps: body.staps,
+            steps: body.steps,
             glutenFree: body.glutenFree,
             userName: body.userName
         });
