@@ -42,9 +42,13 @@ MESSAGES.RECIPE = (recetaRandom) =>{
     recetaRandom.ingredients.forEach(item => {
         ingredientsToString += item + ' | '
     });
-    return `Puedes preparar ${recetaRandom.name} :
+    return `Puedes preparar *${recetaRandom.name}* :
+
 Los ingredientes son: ${ingredientsToString? ingredientsToString : ''}
-Te llevará aproximadamente ${recetaRandom.time} minutos.`
+
+Te llevará aproximadamente ${recetaRandom.time} minutos. ${!!recetaRandom.steps? `
+
+Puedes ver la receta aquí: ${recetaRandom.steps}` : ''}`;
 }
 
 MESSAGES.ADD = `Si quieres contribuir añadiendo alguna receta puedes hacerlo desde aqui:
