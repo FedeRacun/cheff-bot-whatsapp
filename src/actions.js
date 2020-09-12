@@ -26,90 +26,87 @@ async function getReceta(query) {
 function actions(msg) {
     let body = msg.body;
     let queryPlus = {};
-    const isAction = body.startsWith('#')
     const hasAdditives = body.includes('-')
+    body = body.replace(/\s/g, '');
 
-    if (isAction) {
-        body = body.replace(/\s/g, '');
+    if(hasAdditives){
+        let additivesIndex = body.search('-')+1;
+        let additivesSector = body.slice(additivesIndex, body.length)
+        const additives = additivesSector.split('-');
 
-        if(hasAdditives){
-            let additivesIndex = body.search('-')+1;
-            let additivesSector = body.slice(additivesIndex, body.length)
-            const additives = additivesSector.split('-');
-
-            switch (additives[0]) {
-                case "f":
-                    queryPlus = {...queryPlus, difficulty: 1};
-                    break;
-                case "m":
-                    queryPlus = {...queryPlus, difficulty: 2};
-                    break;
-                case "d":
-                    queryPlus = {...queryPlus, difficulty: 3};
-                    break;
-                case "tacc":
-                    queryPlus = {...queryPlus, glutenFree: true};
-                    break;
-            }
-
-            queryPlus = !!additives[1] ? {...queryPlus, glutenFree: true} : queryPlus;
-            body = body.split('-')[0];
+        switch (additives[0]) {
+            case "f":
+                queryPlus = {...queryPlus, difficulty: 1};
+                break;
+            case "m":
+                queryPlus = {...queryPlus, difficulty: 2};
+                break;
+            case "d":
+                queryPlus = {...queryPlus, difficulty: 3};
+                break;
+            case "tacc":
+                queryPlus = {...queryPlus, glutenFree: true};
+                break;
         }
 
-
-    } else {
-        return client.sendMessage(msg.from, MESSAGES.NOTACTION);
+        queryPlus = !!additives[1] ? {...queryPlus, glutenFree: true} : queryPlus;
+        body = body.split('-')[0];
     }
 
     switch (body) {
-        case '#ping':
+        case 'ping':
             client.sendMessage(msg.from, 'pong');
             break;
 
-        case '#facil':
-        case "#fácil":
+        case 'facil':
+        case "fácil":
             getReceta({...queryPlus,difficulty: 1}).then( recetaRandom => {
                 client.sendMessage(msg.from, MESSAGES.RECIPE(recetaRandom));
             })
             break;
 
-        case '#medio':
+        case 'medio':
             getReceta({...queryPlus,difficulty: 2}).then( recetaRandom => {
                 client.sendMessage(msg.from, MESSAGES.RECIPE(recetaRandom));
             })
             break;
 
-        case '#dificil':
-        case "#difícil":
+        case 'dificil':
+        case "difícil":
             getReceta({...queryPlus,difficulty: 3}).then( recetaRandom => {
                 client.sendMessage(msg.from, MESSAGES.RECIPE(recetaRandom));
             })
             break;
 
-        case ('#vegetariano'):
+        case ('vegetariano'):
             getReceta({...queryPlus,type: 'VEGETARIAN'}).then( recetaRandom => {
                 client.sendMessage(msg.from, MESSAGES.RECIPE(recetaRandom));
             })
             break;
 
-        case '#vegano':
+        case 'vegano':
             getReceta({...queryPlus,type: 'VEGAN'}).then( recetaRandom => {
                 client.sendMessage(msg.from, MESSAGES.RECIPE(recetaRandom));
             })
             break;
 
-        case '#postre':
+        case 'postre':
             getReceta({...queryPlus,type: 'DESSERT'}).then( recetaRandom => {
                 client.sendMessage(msg.from, MESSAGES.RECIPE(recetaRandom));
             })
             break;
 
-        case '#añadir':
+        case 'añadir':
             client.sendMessage(msg.from, MESSAGES.ADD);
             break;
 
-        case '#opciones':
+        case 'opciones':
             client.sendMessage(msg.from, MESSAGES.OPTIONS);
+            break;
+
+        case 'próximos':
+        case 'proximos':
+            client.sendMessage(msg.from, MESSAGES.PROXIMOS);
             break;
 
         default:
